@@ -1,3 +1,8 @@
+## Important Note: 
+This is now a forked repository. To create an issue or find the latest updates visit:
+
+https://github.com/KingdomFirst/rock-attended-checkin
+
 # rock-attended-checkin
 
 This is the source project for the Attended Check-in plugin for [Rock RMS](http://rockrms.com).
