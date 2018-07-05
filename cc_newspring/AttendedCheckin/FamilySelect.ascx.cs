@@ -25,10 +25,10 @@ using System.Web.UI.WebControls;
 using cc.newspring.AttendedCheckIn.Utility;
 using Rock;
 using Rock.Attribute;
+using Rock.Cache;
 using Rock.CheckIn;
 using Rock.Data;
 using Rock.Model;
-using Rock.Web.Cache;
 using Rock.Web.UI.Controls;
 
 namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
@@ -94,7 +94,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
                     var personSpecialNeedsGuid = GetAttributeValue( "PersonSpecialNeedsAttribute" ).AsGuid();
                     if ( personSpecialNeedsGuid != Guid.Empty )
                     {
-                        var specialNeedsAttribute = AttributeCache.Read( personSpecialNeedsGuid );
+                        var specialNeedsAttribute = CacheAttribute.Get( personSpecialNeedsGuid );
                         if ( specialNeedsAttribute != null )
                         {
                             specialNeedsKey = specialNeedsAttribute.Key;
@@ -443,7 +443,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
                 SerializedPerson person = ( (ListViewDataItem)e.Item ).DataItem as SerializedPerson;
 
                 var ddlSuffix = (RockDropDownList)e.Item.FindControl( "ddlSuffix" );
-                ddlSuffix.BindToDefinedType( DefinedTypeCache.Read( new Guid( Rock.SystemGuid.DefinedType.PERSON_SUFFIX ) ), true );
+                ddlSuffix.BindToDefinedType( CacheDefinedType.Get( new Guid( Rock.SystemGuid.DefinedType.PERSON_SUFFIX ) ), true );
                 if ( person.SuffixValueId.HasValue )
                 {
                     ddlSuffix.SelectedValue = person.SuffixValueId.ToString();
@@ -935,7 +935,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
         {
             tbPersonFirstName.Text = string.Empty;
             tbPersonLastName.Text = string.Empty;
-            ddlPersonSuffix.BindToDefinedType( DefinedTypeCache.Read( new Guid( Rock.SystemGuid.DefinedType.PERSON_SUFFIX ) ), true );
+            ddlPersonSuffix.BindToDefinedType( CacheDefinedType.Get( new Guid( Rock.SystemGuid.DefinedType.PERSON_SUFFIX ) ), true );
             ddlPersonSuffix.SelectedIndex = 0;
             ddlPersonGender.BindToEnum<Gender>();
             ddlPersonGender.SelectedIndex = 0;
@@ -954,7 +954,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
             var personService = new PersonService( rockContext );
             var peopleQry = personService.Queryable().AsNoTracking();
 
-            var abilityLevelValues = DefinedTypeCache.Read( new Guid( Rock.SystemGuid.DefinedType.PERSON_ABILITY_LEVEL_TYPE ), rockContext ).DefinedValues;
+            var abilityLevelValues = CacheDefinedType.Get( new Guid( Rock.SystemGuid.DefinedType.PERSON_ABILITY_LEVEL_TYPE ), rockContext ).DefinedValues;
 
             var firstNameIsEmpty = string.IsNullOrEmpty( tbPersonFirstName.Text );
             var lastNameIsEmpty = string.IsNullOrEmpty( tbPersonLastName.Text );
@@ -1072,12 +1072,12 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
             var personService = new PersonService( rockContext );
 
             var defaultStatusGuid = GetAttributeValue( "DefaultConnectionStatus" ).AsGuid();
-            var connectionStatus = DefinedValueCache.Read( defaultStatusGuid, rockContext );
+            var connectionStatus = CacheDefinedValue.Get( defaultStatusGuid, rockContext );
 
-            var recordStatus = DefinedTypeCache.Read( new Guid( Rock.SystemGuid.DefinedType.PERSON_RECORD_STATUS ), rockContext );
+            var recordStatus = CacheDefinedType.Get( new Guid( Rock.SystemGuid.DefinedType.PERSON_RECORD_STATUS ), rockContext );
             var activeRecord = recordStatus.DefinedValues.FirstOrDefault( dv => dv.Guid.Equals( new Guid( Rock.SystemGuid.DefinedValue.PERSON_RECORD_STATUS_ACTIVE ) ) );
 
-            var recordType = DefinedTypeCache.Read( new Guid( Rock.SystemGuid.DefinedType.PERSON_RECORD_TYPE ), rockContext );
+            var recordType = CacheDefinedType.Get( new Guid( Rock.SystemGuid.DefinedType.PERSON_RECORD_TYPE ), rockContext );
             var personType = recordType.DefinedValues.FirstOrDefault( dv => dv.Guid.Equals( new Guid( Rock.SystemGuid.DefinedValue.PERSON_RECORD_TYPE_PERSON ) ) );
 
             foreach ( SerializedPerson personData in serializedPeople )
@@ -1156,7 +1156,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
         private Group AddGroupMembers( Group familyGroup, List<Person> newPeople )
         {
             var rockContext = new RockContext();
-            var familyGroupType = GroupTypeCache.GetFamilyGroupType();
+            var familyGroupType = CacheGroupType.GetFamilyGroupType();
 
             // Create a new family group if one doesn't exist
             if ( familyGroup == null )
