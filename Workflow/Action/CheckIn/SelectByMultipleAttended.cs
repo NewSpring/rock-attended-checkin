@@ -21,10 +21,10 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using Rock;
 using Rock.Attribute;
+using Rock.Cache;
 using Rock.CheckIn;
 using Rock.Data;
 using Rock.Model;
-using Rock.Web.Cache;
 using Rock.Workflow;
 using Rock.Workflow.Action.CheckIn;
 using cc.newspring.AttendedCheckIn.Utility;
@@ -72,7 +72,7 @@ namespace cc.newspring.AttendedCheckIn.Workflow.Action.CheckIn
             var personSpecialNeedsGuid = GetAttributeValue( action, "PersonSpecialNeedsAttribute" ).AsGuid();
             if ( personSpecialNeedsGuid != Guid.Empty )
             {
-                personSpecialNeedsKey = AttributeCache.Read( personSpecialNeedsGuid, rockContext ).Key;
+                personSpecialNeedsKey = CacheAttribute.Get( personSpecialNeedsGuid, rockContext ).Key;
             }
 
             // log a warning if the attribute is missing or invalid
@@ -96,7 +96,7 @@ namespace cc.newspring.AttendedCheckIn.Workflow.Action.CheckIn
                     // order by most recent attendance
                     var lastDateAttendances = attendanceService.Queryable().Where( a =>
                             a.PersonAlias.PersonId == previousAttender.Person.Id &&
-                            availableGroupTypeIds.Contains( a.Group.GroupTypeId ) &&
+                            availableGroupTypeIds.Contains( a.Occurrence.Group.GroupTypeId ) &&
                             a.StartDateTime >= cutoffDate && a.DidAttend == true )
                         .OrderByDescending( a => a.StartDateTime ).Take( maxAssignments )
                         .ToList();

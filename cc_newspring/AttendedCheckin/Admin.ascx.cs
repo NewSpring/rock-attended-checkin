@@ -27,10 +27,10 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Rock;
 using Rock.Attribute;
+using Rock.Cache;
 using Rock.CheckIn;
 using Rock.Data;
 using Rock.Model;
-using Rock.Web.Cache;
 using Rock.Web.UI;
 using Rock.Web.UI.Controls;
 
@@ -182,7 +182,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
             bool lookupKioskName = GetAttributeValue( "EnableReverseLookup" ).AsBoolean( false );
 
             var rockContext = new RockContext();
-            var checkInDeviceTypeId = DefinedValueCache.Read( Rock.SystemGuid.DefinedValue.DEVICE_TYPE_CHECKIN_KIOSK ).Id;
+            var checkInDeviceTypeId = CacheDefinedValue.Get( Rock.SystemGuid.DefinedValue.DEVICE_TYPE_CHECKIN_KIOSK ).Id;
             var device = new DeviceService( rockContext ).GetByIPAddress( ipAddress, checkInDeviceTypeId, lookupKioskName );
 
             string hostName = string.Empty;
@@ -402,7 +402,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
         {
             double latitude = double.Parse( sLatitude );
             double longitude = double.Parse( sLongitude );
-            var checkInDeviceTypeId = DefinedValueCache.Read( Rock.SystemGuid.DefinedValue.DEVICE_TYPE_CHECKIN_KIOSK ).Id;
+            var checkInDeviceTypeId = CacheDefinedValue.Get( Rock.SystemGuid.DefinedValue.DEVICE_TYPE_CHECKIN_KIOSK ).Id;
 
             // We need to use the DeviceService until we can get the GeoFence to JSON Serialize/Deserialize.
             using ( var rockContext = new RockContext() )
@@ -458,13 +458,13 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
         /// </summary>
         /// <param name="groupTypeId">The group type identifier.</param>
         /// <returns></returns>
-        private GroupTypeCache GetCheckinType( int? groupTypeId )
+        private CacheGroupType GetCheckinType( int? groupTypeId )
         {
             Guid templateTypeGuid = Rock.SystemGuid.DefinedValue.GROUPTYPE_PURPOSE_CHECKIN_TEMPLATE.AsGuid();
-            var templateType = DefinedValueCache.Read( templateTypeGuid );
+            var templateType = CacheDefinedValue.Get( templateTypeGuid );
             if ( templateType != null )
             {
-                return GetCheckinType( GroupTypeCache.Read( groupTypeId.Value ), templateType.Id );
+                return GetCheckinType( CacheGroupType.Get( groupTypeId.Value ), templateType.Id );
             }
 
             return null;
@@ -477,7 +477,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
         /// <param name="templateTypeId">The template type identifier.</param>
         /// <param name="recursionControl">The recursion control.</param>
         /// <returns></returns>
-        private GroupTypeCache GetCheckinType( GroupTypeCache groupType, int templateTypeId, List<int> recursionControl = null )
+        private CacheGroupType GetCheckinType( CacheGroupType groupType, int templateTypeId, List<int> recursionControl = null )
         {
             if ( groupType != null )
             {
