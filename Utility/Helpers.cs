@@ -104,7 +104,7 @@ namespace cc.newspring.AttendedCheckIn.Utility
         public static int ReadAttendanceBySchedule( int locationId, int? scheduleId )
         {
             var attendanceCount = 0;
-            var attendanceCache = KioskLocationAttendance.Read( locationId );
+            var attendanceCache = KioskLocationAttendance.Get( locationId );
 
             if ( attendanceCache != null )
             {
