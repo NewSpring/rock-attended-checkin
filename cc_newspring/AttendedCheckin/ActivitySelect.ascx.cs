@@ -23,11 +23,11 @@ using System.Web.UI.WebControls;
 using cc.newspring.AttendedCheckIn.Utility;
 using Rock;
 using Rock.Attribute;
-using Rock.Cache;
 using Rock.CheckIn;
 using Rock.Data;
 using Rock.Lava;
 using Rock.Model;
+using Rock.Web.Cache;
 using System.Threading.Tasks;
 using Rock.Web.UI.Controls;
 
@@ -195,7 +195,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
             }
 
             // Instantiate the allergy control for reference later
-            var allergyControl = CacheAttribute.Get( new Guid( Rock.SystemGuid.Attribute.PERSON_ALLERGY ) )
+            var allergyControl = AttributeCache.Read( new Guid( Rock.SystemGuid.Attribute.PERSON_ALLERGY ) )
                 .AddControl( phAttributes.Controls, string.Empty, "", true, true );
             if ( allergyControl is RockTextBox )
             {
@@ -732,7 +732,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
             currentPerson.Person.SetAttributeValue( SpecialNeedsKey, cbSpecialNeeds.Checked ? "Yes" : string.Empty );
 
             // store the allergies
-            var allergyAttribute = CacheAttribute.Get( new Guid( Rock.SystemGuid.Attribute.PERSON_ALLERGY ), rockContext );
+            var allergyAttribute = AttributeCache.Read( new Guid( Rock.SystemGuid.Attribute.PERSON_ALLERGY ), rockContext );
             var allergyAttributeControl = phAttributes.FindControl( string.Format( "attribute_field_{0}", allergyAttribute.Id ) );
             if ( allergyAttributeControl != null )
             {
@@ -958,7 +958,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
             if ( person != null )
             {
                 ddlAbilityGrade.LoadAbilityAndGradeItems();
-                ddlSuffix.BindToDefinedType( CacheDefinedType.Get( new Guid( Rock.SystemGuid.DefinedType.PERSON_SUFFIX ) ), true );
+                ddlSuffix.BindToDefinedType( DefinedTypeCache.Read( new Guid( Rock.SystemGuid.DefinedType.PERSON_SUFFIX ) ), true );
 
                 ViewState["lblAbilityGrade"] = ddlAbilityGrade.Label;
                 person.Person.LoadAttributes();
@@ -996,7 +996,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
                 if ( !string.IsNullOrWhiteSpace( personAllergyValues ) )
                 {
                     phAttributes.Controls.Clear();
-                    var control = CacheAttribute.Get( new Guid( Rock.SystemGuid.Attribute.PERSON_ALLERGY ) )
+                    var control = AttributeCache.Read( new Guid( Rock.SystemGuid.Attribute.PERSON_ALLERGY ) )
                         .AddControl( phAttributes.Controls, personAllergyValues, "", true, true );
 
                     if ( control is RockTextBox )
