@@ -75,28 +75,28 @@ namespace cc.newspring.AttendedCheckIn.Workflow.Action.CheckIn
             var personSpecialNeedsGuid = GetAttributeValue( action, "PersonSpecialNeedsAttribute" ).AsGuid();
             if ( personSpecialNeedsGuid != Guid.Empty )
             {
-                personSpecialNeedsKey = AttributeCache.Read( personSpecialNeedsGuid, rockContext ).Key;
+                personSpecialNeedsKey = AttributeCache.Get( personSpecialNeedsGuid, rockContext ).Key;
             }
 
             var groupSpecialNeedsKey = string.Empty;
             var groupSpecialNeedsGuid = GetAttributeValue( action, "GroupSpecialNeedsAttribute" ).AsGuid();
             if ( personSpecialNeedsGuid != Guid.Empty )
             {
-                groupSpecialNeedsKey = AttributeCache.Read( groupSpecialNeedsGuid, rockContext ).Key;
+                groupSpecialNeedsKey = AttributeCache.Get( groupSpecialNeedsGuid, rockContext ).Key;
             }
 
             var groupAgeRangeKey = string.Empty;
             var groupAgeRangeGuid = GetAttributeValue( action, "GroupAgeRangeAttribute" ).AsGuid();
             if ( personSpecialNeedsGuid != Guid.Empty )
             {
-                groupAgeRangeKey = AttributeCache.Read( groupAgeRangeGuid, rockContext ).Key;
+                groupAgeRangeKey = AttributeCache.Get( groupAgeRangeGuid, rockContext ).Key;
             }
 
             var groupGradeRangeKey = string.Empty;
             var groupGradeRangeGuid = GetAttributeValue( action, "GroupGradeRangeAttribute" ).AsGuid();
             if ( personSpecialNeedsGuid != Guid.Empty )
             {
-                groupGradeRangeKey = AttributeCache.Read( groupGradeRangeGuid, rockContext ).Key;
+                groupGradeRangeKey = AttributeCache.Get( groupGradeRangeGuid, rockContext ).Key;
             }
 
             // log a warning if any of the attributes are missing or invalid
@@ -231,7 +231,7 @@ namespace cc.newspring.AttendedCheckIn.Workflow.Action.CheckIn
                                     CheckInGroup closestGradeGroup = null;
                                     if ( person.Person.GradeOffset != null )
                                     {
-                                        var gradeValues = DefinedTypeCache.Read( new Guid( Rock.SystemGuid.DefinedType.SCHOOL_GRADES ) ).DefinedValues;
+                                        var gradeValues = DefinedTypeCache.Get( new Guid( Rock.SystemGuid.DefinedType.SCHOOL_GRADES ) ).DefinedValues;
                                         var gradeGroups = validGroups.Where( g => g.Group.AttributeValues.ContainsKey( groupGradeRangeKey ) && g.Group.AttributeValues[groupGradeRangeKey].Value != null )
                                             .ToList()
                                             .Select( g => new
