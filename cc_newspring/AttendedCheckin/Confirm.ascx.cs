@@ -303,9 +303,9 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
                     var tomorrow = today.AddDays( 1 );
                     var personAttendance = rockContext.Attendances.FirstOrDefault( a => a.StartDateTime >= today
                         && a.StartDateTime < tomorrow
-                        && a.LocationId == locationId
-                        && a.ScheduleId == scheduleId
-                        && a.GroupId == groupId
+                        && a.Occurrence.LocationId == locationId
+                        && a.Occurrence.ScheduleId == scheduleId
+                        && a.Occurrence.GroupId == groupId
                         && a.PersonAlias.PersonId == personId
                     );
 
