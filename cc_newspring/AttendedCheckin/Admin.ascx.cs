@@ -182,7 +182,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
             bool lookupKioskName = GetAttributeValue( "EnableReverseLookup" ).AsBoolean( false );
 
             var rockContext = new RockContext();
-            var checkInDeviceTypeId = DefinedValueCache.Read( Rock.SystemGuid.DefinedValue.DEVICE_TYPE_CHECKIN_KIOSK ).Id;
+            var checkInDeviceTypeId = DefinedValueCache.Get( Rock.SystemGuid.DefinedValue.DEVICE_TYPE_CHECKIN_KIOSK ).Id;
             var device = new DeviceService( rockContext ).GetByIPAddress( ipAddress, checkInDeviceTypeId, lookupKioskName );
 
             string hostName = string.Empty;
@@ -402,7 +402,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
         {
             double latitude = double.Parse( sLatitude );
             double longitude = double.Parse( sLongitude );
-            var checkInDeviceTypeId = DefinedValueCache.Read( Rock.SystemGuid.DefinedValue.DEVICE_TYPE_CHECKIN_KIOSK ).Id;
+            var checkInDeviceTypeId = DefinedValueCache.Get( Rock.SystemGuid.DefinedValue.DEVICE_TYPE_CHECKIN_KIOSK ).Id;
 
             // We need to use the DeviceService until we can get the GeoFence to JSON Serialize/Deserialize.
             using ( var rockContext = new RockContext() )
@@ -461,10 +461,10 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
         private GroupTypeCache GetCheckinType( int? groupTypeId )
         {
             Guid templateTypeGuid = Rock.SystemGuid.DefinedValue.GROUPTYPE_PURPOSE_CHECKIN_TEMPLATE.AsGuid();
-            var templateType = DefinedValueCache.Read( templateTypeGuid );
+            var templateType = DefinedValueCache.Get( templateTypeGuid );
             if ( templateType != null )
             {
-                return GetCheckinType( GroupTypeCache.Read( groupTypeId.Value ), templateType.Id );
+                return GetCheckinType( GroupTypeCache.Get( groupTypeId.Value ), templateType.Id );
             }
 
             return null;
