@@ -195,7 +195,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
             }
 
             // Instantiate the allergy control for reference later
-            var allergyControl = AttributeCache.Read( new Guid( Rock.SystemGuid.Attribute.PERSON_ALLERGY ) )
+            var allergyControl = AttributeCache.Get( new Guid( Rock.SystemGuid.Attribute.PERSON_ALLERGY ) )
                 .AddControl( phAttributes.Controls, string.Empty, "", true, true );
             if ( allergyControl is RockTextBox )
             {
@@ -599,9 +599,9 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
                             var tomorrow = today.AddDays( 1 );
                             var personAttendance = rockContext.Attendances.FirstOrDefault( a => a.StartDateTime >= today
                                 && a.StartDateTime < tomorrow
-                                && a.LocationId == locationId
-                                && a.ScheduleId == scheduleId
-                                && a.GroupId == groupId
+                                && a.Occurrence.LocationId == locationId
+                                && a.Occurrence.ScheduleId == scheduleId
+                                && a.Occurrence.GroupId == groupId
                                 && a.PersonAlias.PersonId == person.Person.Id
                             );
 
@@ -732,7 +732,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
             currentPerson.Person.SetAttributeValue( SpecialNeedsKey, cbSpecialNeeds.Checked ? "Yes" : string.Empty );
 
             // store the allergies
-            var allergyAttribute = AttributeCache.Read( new Guid( Rock.SystemGuid.Attribute.PERSON_ALLERGY ), rockContext );
+            var allergyAttribute = AttributeCache.Get( new Guid( Rock.SystemGuid.Attribute.PERSON_ALLERGY ), rockContext );
             var allergyAttributeControl = phAttributes.FindControl( string.Format( "attribute_field_{0}", allergyAttribute.Id ) );
             if ( allergyAttributeControl != null )
             {
@@ -958,7 +958,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
             if ( person != null )
             {
                 ddlAbilityGrade.LoadAbilityAndGradeItems();
-                ddlSuffix.BindToDefinedType( DefinedTypeCache.Read( new Guid( Rock.SystemGuid.DefinedType.PERSON_SUFFIX ) ), true );
+                ddlSuffix.BindToDefinedType( DefinedTypeCache.Get( new Guid( Rock.SystemGuid.DefinedType.PERSON_SUFFIX ) ), true );
 
                 ViewState["lblAbilityGrade"] = ddlAbilityGrade.Label;
                 person.Person.LoadAttributes();
@@ -996,7 +996,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
                 if ( !string.IsNullOrWhiteSpace( personAllergyValues ) )
                 {
                     phAttributes.Controls.Clear();
-                    var control = AttributeCache.Read( new Guid( Rock.SystemGuid.Attribute.PERSON_ALLERGY ) )
+                    var control = AttributeCache.Get( new Guid( Rock.SystemGuid.Attribute.PERSON_ALLERGY ) )
                         .AddControl( phAttributes.Controls, personAllergyValues, "", true, true );
 
                     if ( control is RockTextBox )
@@ -1049,7 +1049,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
                 {
                     var attendance = new ScheduleAttendance();
                     attendance.ScheduleId = schedule.Schedule.Id;
-                    attendance.AttendanceCount = attendanceQuery.Where( l => l.ScheduleId == attendance.ScheduleId ).Count();
+                    attendance.AttendanceCount = attendanceQuery.Where( l => l.Occurrence.ScheduleId == attendance.ScheduleId ).Count();
                     ScheduleAttendanceList.Add( attendance );
                 }
             }
