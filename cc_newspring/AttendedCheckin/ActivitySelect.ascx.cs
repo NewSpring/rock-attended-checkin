@@ -774,8 +774,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
                 return;
             }
 
-            //GoNext();
-            NavigateToNextPage();
+            GoNext();
         }
 
         #endregion Click Events
