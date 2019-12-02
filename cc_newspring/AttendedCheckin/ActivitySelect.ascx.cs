@@ -245,42 +245,30 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
             {
                 var changes = new List<string>();
                 person.PreSelected = person.Selected;
+
                 var groupTypes = person.GroupTypes.ToList();
                 foreach ( var groupType in groupTypes )
                 {
-                    History.EvaluateChange( changes, string.Format( "{0} Grouptype", groupType ), groupType.PreSelected, groupType.Selected );
                     groupType.PreSelected = groupType.Selected;
                 }
 
                 var groups = groupTypes.SelectMany( gt => gt.Groups ).ToList();
                 foreach ( var group in groups )
                 {
-                    History.EvaluateChange( changes, string.Format( "{0} Group", group ), group.PreSelected, group.Selected );
                     group.PreSelected = group.Selected;
                 }
 
                 var locations = groups.SelectMany( g => g.Locations ).ToList();
                 foreach ( var location in locations )
                 {
-                    History.EvaluateChange( changes, string.Format( "{0} Location", location ), location.PreSelected, location.Selected );
                     location.PreSelected = location.Selected;
                 }
 
                 var schedules = locations.SelectMany( l => l.Schedules ).ToList();
                 foreach ( var schedule in schedules )
                 {
-                    History.EvaluateChange( changes, string.Format( "{0} Schedule", schedule ), schedule.PreSelected, schedule.Selected );
                     schedule.PreSelected = schedule.Selected;
                 }
-
-                HistoryService.AddChanges(
-                    new RockContext(),
-                    typeof( Person ),
-                    Rock.SystemGuid.Category.HISTORY_PERSON_ACTIVITY.AsGuid(),
-                    person.Person.Id,
-                    changes,
-                    CurrentPersonAliasId
-                );
             }
             else
             {
@@ -786,7 +774,8 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
                 return;
             }
 
-            GoNext();
+            //GoNext();
+            NavigateToNextPage();
         }
 
         #endregion Click Events
