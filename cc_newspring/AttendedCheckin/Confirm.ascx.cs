@@ -535,7 +535,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
                     var lastLabel = labels.Last();
                     foreach ( var label in labels.Where( l => l.PrintFrom == PrintFrom.Server && !string.IsNullOrEmpty( l.PrinterAddress ) ) )
                     {
-                        var labelCache = KioskLabel.Read( label.FileGuid );
+                        var labelCache = KioskLabel.Get( label.FileGuid );
                         if ( labelCache != null )
                         {
                             if ( printerIp != label.PrinterAddress )
